@@ -11,12 +11,12 @@ var verbose = process.env['verbose'] || false;
 var System = function(){
 
     // Data Structures
-    // Presistence
+    // Persistence
     this.data = {};
     this.triggers = {};
     this.queue = [];
     this.nextTick = false;
-    
+
     // Dynamic
     this.needs = {};
     this.events = {};
@@ -30,7 +30,7 @@ System.prototype.call = function(name, func, ev_data){
      */
     var obj = {
         /**
-         * Call this function when your need is saticfied
+         * Call this function when your need is satisfied
          * @param {Object} data - Need's data
          */
         done: function(data){
@@ -49,7 +49,7 @@ System.prototype.call = function(name, func, ev_data){
             sys.triggers[name].wait = true;
         },
         /**
-         * Call this function for PRE only, when you have proccessed but have not failed or done
+         * Call this function for PRE only, when you have processed but have not failed or done
          */
         ok: function(){ // USED IN PRE
             sys.next();
@@ -74,29 +74,29 @@ System.prototype.fail = function(name, dir, except){
             req: name
         }
     }
-    if( dir == 1 || dir == 0 ){
+    if( dir === 1 || dir === 0 ){
         // Down fail
         for(var i in need.req){
             var tmp_trig = this.triggers[need.req[i]];
             if(tmp_trig){ // It might have been forgotten
                 if(except.indexOf(need.req[i]) || !tmp_trig.user_trigged){
                     tmp_trig.father = tmp_trig.father.filter(function(f){
-                        return f != name;
+                        return f !== name;
                     });
-                    if (tmp_trig.father.length == 1){
-                        // I was the only fahter, kill this.
+                    if (tmp_trig.father.length === 1){
+                        // I was the only father, kill this.
                         this.fail(need.req[i], 1, except.concat([name]));
                     }
                 }
             }
         }
     }
-    if (dir == 2 || dir == 0){
+    if (dir === 2 || dir === 0){
         // Up fail
-        if(trigger){ // It might be  triggered without anything in mind
+        if(trigger){ // It might be triggered without anything in mind
             for(var i in trigger.father){
                 var tmp_name = trigger.father[i];
-                if(except.indexOf(tmp_name) == -1){
+                if(except.indexOf(tmp_name) === -1){
                     if( tmp_name instanceof Array ){
                         var tmp_trig = this.triggers[tmp_name];
                         this.queue.push(tmp_name);
@@ -111,7 +111,7 @@ System.prototype.fail = function(name, dir, except){
     }
     // Fail myself
     this.queue = this.queue.filter(function(f){
-        return f != name;
+        return f !== name;
     });
     delete this.triggers[name];
 }
@@ -142,10 +142,10 @@ System.prototype.inform = function(name, info){
             var tmp_trig = this.triggers[need.req[i]];
             if(tmp_trig && !tmp_trig.user_trigged){
                 tmp_trig.father = tmp_trig.father.filter(function(f){
-                    return f != name;
+                    return f !== name;
                 });
-                if (tmp_trig.father.length == 1){
-                    // I was the only fahter, kill this.
+                if (tmp_trig.father.length === 1){
+                    // I was the only father, kill this.
                     this.fail(need.req[i], 1, [name]);
                 }
             }
@@ -167,7 +167,7 @@ System.prototype.inform = function(name, info){
  *
  * @param {String} eventName - Event name
  * @param {Object} eventData - Event data
- */ 
+ */
 System.prototype.invoke = function(eventName, eventData){
     var tmp = this.events[eventName];
 
@@ -181,9 +181,7 @@ System.prototype.invoke = function(eventName, eventData){
 }
 
 System.prototype.isNeeded = function(name){
-    if(typeof this.data[name] == 'undefined')
-        return true;
-    return false;
+    return typeof this.data[name] === 'undefined';
 }
 
 /**
@@ -217,8 +215,8 @@ System.prototype.process = function(){
     if(verbose)
         console.log('\n' + JSON.stringify(this, null, 2) + '\n-----------');
     this.nextTick = false;
-    if(this.queue.length == 0){
-        return; 
+    if(this.queue.length === 0){
+        return;
         // TODO maybe do something else?
     }
     var name = this.queue.pop();
@@ -236,7 +234,7 @@ System.prototype.process = function(){
     }
     if(this.isNeeded(name)){
         if(name instanceof Array){
-            if(trigger.branch != -1){
+            if(trigger.branch !== -1){
                 if( !this.isNeeded(name[trigger.branch]) ){
                     this.inform(name, this.data[name[trigger.branch]]);
                     //this.queue.push(name);
@@ -244,8 +242,8 @@ System.prototype.process = function(){
                     return;
                 }
             }
-            trigger.branch ++;
-            if(trigger.branch == name.length){
+            trigger.branch++;
+            if(trigger.branch === name.length){
                 // Failed
                 this.fail(name);
                 this.next();
@@ -326,8 +324,8 @@ System.prototype.save = function(){
 /**
  * Trigger a need for the system.
  *
- * @param {String} Need's name
- * @param {String} [father=null] Do not set father, for internal purpose only
+ * @param {String} name - Need's name
+ * @param {String} father - [father=null] Do not set father, for internal purpose only
  */
 System.prototype.trigger = function(name, father){
     if(! this.isNeeded(name)){
@@ -339,10 +337,10 @@ System.prototype.trigger = function(name, father){
             this.triggers[name].father.push(father);
         return;
     }
-    tmp = {
+    var tmp = {
         father: [],
         pre_done: false
-    }
+    };
     if(father)
         tmp.father.push(father);
     else
@@ -358,15 +356,15 @@ System.prototype.trigger = function(name, father){
 }
 
 /**
- * This callback is called after all requirments of the need are saticfied
+ * This callback is called after all requirements of the need are satisfied
  * @callback Need.post
  * @param {Object} inputs -- The data stored from needs
  * @this callee
-*/
+ */
 
 /**
- * This callback is called before any of the requirments are processed
- *  *Note*: If a requirment is saticfied before this need turn, it might be called before pre.
+ * This callback is called before any of the requirements are processed
+ *  *Note*: If a requirement is satisfied before this need turn, it might be called before pre.
  *  @callback Need.pre
  *  @param {Object} inputs -- The data stored from needs
  *  @this callee
@@ -376,7 +374,7 @@ System.prototype.trigger = function(name, father){
  * This callback is called when a registered event is invoked.
  * @callback eventCallback
  * @param {Object} inputs -- The data stored from needs
- * @param {Object} evenetData - The data from the invoked event
+ * @param {Object} eventData - The data from the invoked event
  * @this callee
  */
 
@@ -387,8 +385,8 @@ System.prototype.trigger = function(name, father){
  * @param Need {Object} Need - The need's config
  * @param Need.name {String} name - The need's name
  * @param Need.req {String[]} req - The required needs for this need
- * @param Need.post {post} post - The callback that is called after all requirments are saticfied
- * @param Need.pre {pre} pre - The callback that is called before any of the requirments are triggered
+ * @param Need.post {post} post - The callback that is called after all requirements are satisfied
+ * @param Need.pre {pre} pre - The callback that is called before any of the requirements are triggered
  * @param Need.invokers {Object[]} invokers - An array of invokers
  * @param Need.invokers[].event {String|String[]} event - Name of the event or events for this invoker
  * @param Need.invokers[].callback {System~eventCallback} callback - A callback for when the event is invoked.
@@ -403,11 +401,11 @@ var Need = function(config){
     this.post = config.post;
     this.invokers = config.invokers || [];
     this.pre = config.pre;
-}
+};
 
 Need.OneOf = function(needs){
     return needs;
-}
+};
 
 System.Need = Need;
 
