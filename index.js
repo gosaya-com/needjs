@@ -55,7 +55,7 @@ System.prototype.call = function(name, func, ev_data){
             sys.next();
         }
     };
-    func.call(obj, this.data, ev_data);
+    func.apply(obj, [this.data, ev_data]);
 }
 
 System.prototype.fail = function(name, dir, except){
@@ -78,13 +78,15 @@ System.prototype.fail = function(name, dir, except){
         // Down fail
         for(var i in need.req){
             var tmp_trig = this.triggers[need.req[i]];
-            if(except.indexOf(need.req[i]) || !tmp_trig.user_trigged){
-                tmp_trig.father = tmp_trig.father.filter(function(f){
-                    return f != name;
-                });
-                if (tmp_trig.father.length == 1){
-                    // I was the only fahter, kill this.
-                    this.fail(need.req[i], 1, except.concat([name]));
+            if(tmp_trig){ // It might have been forgotten
+                if(except.indexOf(need.req[i]) || !tmp_trig.user_trigged){
+                    tmp_trig.father = tmp_trig.father.filter(function(f){
+                        return f != name;
+                    });
+                    if (tmp_trig.father.length == 1){
+                        // I was the only fahter, kill this.
+                        this.fail(need.req[i], 1, except.concat([name]));
+                    }
                 }
             }
         }
