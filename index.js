@@ -83,7 +83,7 @@ System.prototype.fail = function(name, dir, except){
                     tmp_trig.father = tmp_trig.father.filter(function(f){
                         return f !== name;
                     });
-                    if (tmp_trig.father.length === 1){
+                    if (tmp_trig.father.length === 0){
                         // I was the only father, kill this.
                         this.fail(need.req[i], 1, except.concat([name]));
                     }
@@ -133,6 +133,7 @@ System.prototype.forget = function(need){
  * @param {Object} info - Need's value
  */
 System.prototype.inform = function(name, info){
+    info = info || true;
     this.data[name] = info;
 
     // Check child, kill if un needed
@@ -213,7 +214,7 @@ System.prototype.next = function(){
 
 System.prototype.process = function(){
     if(verbose)
-        console.log('\n' + JSON.stringify(this, null, 2) + '\n-----------');
+        console.log('\n' + JSON.stringify(this.save(), null, 2) + '\n-----------');
     this.nextTick = false;
     if(this.queue.length === 0){
         return;
@@ -237,8 +238,6 @@ System.prototype.process = function(){
             if(trigger.branch !== -1){
                 if( !this.isNeeded(name[trigger.branch]) ){
                     this.inform(name, this.data[name[trigger.branch]]);
-                    //this.queue.push(name);
-                    //return this.next();
                     return;
                 }
             }
@@ -266,7 +265,6 @@ System.prototype.process = function(){
         }
     } else {
         // Do nothing, this isn't needed.
-        this.inform(name, this.data[name]);
         this.next();
     }
 }
