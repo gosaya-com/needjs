@@ -199,6 +199,16 @@ System.prototype.load = function(config){
 }
 
 /**
+ * Load system's dynamics
+ *
+ * @param {Dynamics}
+ */
+System.prototype.loadDynamic = function(dynamics){
+    this.events = dynamics.events;
+    this.needs = dynamics.needs;
+}
+
+/**
  * Process the system in the next tick
  */
 System.prototype.next = function(){
@@ -316,6 +326,17 @@ System.prototype.save = function(){
         triggers: this.triggers,
         queue: this.queue,
         nextTick: this.nextTick
+    }
+}
+
+/**
+ * Save system's dynamics
+ * @returns {Dynamic} System's dynamics.
+ */
+System.prototype.saveDynamic = function(){
+    return {
+        needs: this.needs,
+        events: this.events
     }
 }
 

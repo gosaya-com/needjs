@@ -34,10 +34,12 @@ The core NeedJS system. This class handles all calls and manages the needs and r
             * [.inform(name, info)](#module_NeedJS--System+inform)
             * [.invoke(eventName, eventData)](#module_NeedJS--System+invoke)
             * [.load(config)](#module_NeedJS--System+load)
+            * [.loadDynamic(dynamics)](#module_NeedJS--System+loadDynamic)
             * [.next()](#module_NeedJS--System+next)
             * [.register(need)](#module_NeedJS--System+register)
             * [.save()](#module_NeedJS--System+save) ⇒ <code>Config</code>
-            * [.trigger(Need&#x27;s, [father])](#module_NeedJS--System+trigger)
+            * [.saveDynamic()](#module_NeedJS--System+saveDynamic) ⇒ <code>Dynamic</code>
+            * [.trigger(name, father)](#module_NeedJS--System+trigger)
         * _inner_
             * [~eventCallback](#module_NeedJS--System..eventCallback) : <code>function</code>
 
@@ -93,6 +95,17 @@ Load the system from previously saved state
 | --- | --- | --- |
 | config | <code>Config</code> | - A previously saved state |
 
+<a name="module_NeedJS--System+loadDynamic"></a>
+
+#### system.loadDynamic(dynamics)
+Load system's dynamics
+
+**Kind**: instance method of [<code>System</code>](#exp_module_NeedJS--System)  
+
+| Param | Type |
+| --- | --- |
+| dynamics | <code>Dynamics</code> | 
+
 <a name="module_NeedJS--System+next"></a>
 
 #### system.next()
@@ -117,17 +130,24 @@ Save system's state
 
 **Kind**: instance method of [<code>System</code>](#exp_module_NeedJS--System)  
 **Returns**: <code>Config</code> - System's state  
+<a name="module_NeedJS--System+saveDynamic"></a>
+
+#### system.saveDynamic() ⇒ <code>Dynamic</code>
+Save system's dynamics
+
+**Kind**: instance method of [<code>System</code>](#exp_module_NeedJS--System)  
+**Returns**: <code>Dynamic</code> - System's dynamics.  
 <a name="module_NeedJS--System+trigger"></a>
 
-#### system.trigger(Need&#x27;s, [father])
+#### system.trigger(name, father)
 Trigger a need for the system.
 
 **Kind**: instance method of [<code>System</code>](#exp_module_NeedJS--System)  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| Need's | <code>String</code> |  | name |
-| [father] | <code>String</code> | <code></code> | Do not set father, for internal purpose only |
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Need's name |
+| father | <code>String</code> | [father=null] Do not set father, for internal purpose only |
 
 <a name="module_NeedJS--System..eventCallback"></a>
 
@@ -140,7 +160,7 @@ This callback is called when a registered event is invoked.
 | Param | Type | Description |
 | --- | --- | --- |
 | inputs | <code>Object</code> | - The data stored from needs |
-| evenetData | <code>Object</code> | The data from the invoked event |
+| eventData | <code>Object</code> | The data from the invoked event |
 
 <a name="callee"></a>
 
@@ -156,7 +176,7 @@ This callback is called when a registered event is invoked.
 <a name="callee.done"></a>
 
 ### callee.done(data)
-Call this function when your need is saticfied
+Call this function when your need is satisfied
 
 **Kind**: static method of [<code>callee</code>](#callee)  
 
@@ -179,7 +199,7 @@ Call this function when the need needs time
 <a name="callee.ok"></a>
 
 ### callee.ok()
-Call this function for PRE only, when you have proccessed but have not failed or done
+Call this function for PRE only, when you have processed but have not failed or done
 
 **Kind**: static method of [<code>callee</code>](#callee)  
 <a name="Need"></a>
@@ -194,8 +214,8 @@ A need object
 | Need | <code>Object</code> | Need - The need's config |
 | Need.name | <code>String</code> | name - The need's name |
 | Need.req | <code>Array.&lt;String&gt;</code> | req - The required needs for this need |
-| Need.post | <code>post</code> | post - The callback that is called after all requirments are saticfied |
-| Need.pre | <code>pre</code> | pre - The callback that is called before any of the requirments are triggered |
+| Need.post | <code>post</code> | post - The callback that is called after all requirements are satisfied |
+| Need.pre | <code>pre</code> | pre - The callback that is called before any of the requirements are triggered |
 | Need.invokers | <code>Array.&lt;Object&gt;</code> | invokers - An array of invokers |
 | Need.invokers[].event | <code>String</code> \| <code>Array.&lt;String&gt;</code> | event - Name of the event or events for this invoker |
 | Need.invokers[].callback | <code>System~eventCallback</code> | callback - A callback for when the event is invoked. |
@@ -208,7 +228,7 @@ A need object
 <a name="Need.post"></a>
 
 ### Need.post : <code>function</code>
-This callback is called after all requirments of the need are saticfied
+This callback is called after all requirements of the need are satisfied
 
 **Kind**: static typedef of [<code>Need</code>](#Need)  
 **this**: [<code>callee</code>](#callee)  
@@ -220,8 +240,8 @@ This callback is called after all requirments of the need are saticfied
 <a name="Need.pre"></a>
 
 ### Need.pre : <code>function</code>
-This callback is called before any of the requirments are processed
- *Note*: If a requirment is saticfied before this need turn, it might be called before pre.
+This callback is called before any of the requirements are processed
+ *Note*: If a requirement is satisfied before this need turn, it might be called before pre.
 
 **Kind**: static typedef of [<code>Need</code>](#Need)  
 **this**: [<code>callee</code>](#callee)  
