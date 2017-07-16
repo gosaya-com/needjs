@@ -1,3 +1,4 @@
+var EventEmitter = require('events').EventEmitter
 var verbose = process.env['verbose'] || false;
 
 /**
@@ -9,6 +10,7 @@ var verbose = process.env['verbose'] || false;
  * @alias module:NeedJS
  */
 var System = function(){
+    EventEmitter.call(this);
 
     // Data Structures
     // Persistence
@@ -21,6 +23,9 @@ var System = function(){
     this.needs = {};
     this.events = {};
 }
+
+System.prototype.on = EventEmitter.prototype.on;
+System.prototype.emit = EventEmitter.prototype.emit;
 
 System.prototype.call = function(name, func, ev_data){
     var sys = this;
@@ -47,6 +52,7 @@ System.prototype.call = function(name, func, ev_data){
          */
         wait: function(){
             sys.triggers[name].wait = true;
+            sys.emit('wait');
         },
         /**
          * Call this function for PRE only, when you have processed but have not failed or done
@@ -227,6 +233,7 @@ System.prototype.process = function(){
         console.log('\n' + JSON.stringify(this.save(), null, 2) + '\n-----------');
     this.nextTick = false;
     if(this.queue.length === 0){
+        this.emit('stop');
         return;
         // TODO maybe do something else?
     }
@@ -241,6 +248,7 @@ System.prototype.process = function(){
     }
 
     if(trigger && trigger.wait){
+        this.emit('wait');
         return this.next();
     }
     if(this.isNeeded(name)){
@@ -275,6 +283,7 @@ System.prototype.process = function(){
         }
     } else {
         // Do nothing, this isn't needed.
+        this.inform(name, this.data[name]);
         this.next();
     }
 }
