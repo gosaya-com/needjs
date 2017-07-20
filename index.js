@@ -9,7 +9,7 @@ var verbose = process.env['verbose'] || false;
 /**
  * @alias module:NeedJS
  */
-var System = function(){
+var System = function(options){
     EventEmitter.call(this);
 
     // Data Structures
@@ -22,6 +22,7 @@ var System = function(){
     // Dynamic
     this.needs = {};
     this.events = {};
+    this.options = options || {};
 }
 
 System.prototype.on = EventEmitter.prototype.on;
@@ -212,6 +213,7 @@ System.prototype.load = function(config){
 System.prototype.loadDynamic = function(dynamics){
     this.events = dynamics.events;
     this.needs = dynamics.needs;
+    this.options = dynamics.options;
 }
 
 /**
@@ -345,7 +347,8 @@ System.prototype.save = function(){
 System.prototype.saveDynamic = function(){
     return {
         needs: this.needs,
-        events: this.events
+        events: this.events,
+        options: this.options
     }
 }
 
