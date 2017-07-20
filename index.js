@@ -60,7 +60,8 @@ System.prototype.call = function(name, func, ev_data){
          */
         ok: function(){ // USED IN PRE
             sys.next();
-        }
+        },
+        options: sys.options
     };
     func.apply(obj, [this.data, ev_data]);
 }
