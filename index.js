@@ -231,15 +231,19 @@ System.prototype.next = function(){
         );
     }
 }
-
 System.prototype.process = function(){
     if(verbose)
         console.log('\n' + JSON.stringify(this.save(), null, 2) + '\n-----------');
     this.nextTick = false;
     if(this.queue.length === 0){
-        this.emit('stop');
-        return;
-        // TODO maybe do something else?
+        if(Object.keys(this.triggers).length !== 0 && once){
+            // TODO do something
+            this.queue.push(Object.keys(this.triggers)[0]);
+        } else {
+
+            this.emit('stop');
+            return;
+        }
     }
     var name = this.queue.pop();
     var trigger = this.triggers[name];
@@ -368,6 +372,7 @@ System.prototype.trigger = function(name, father){
     if(this.triggers[name]){
         if(father)
             this.triggers[name].father.push(father);
+        this.queue.push(name);
         return;
     }
     var tmp = {
