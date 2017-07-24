@@ -133,6 +133,7 @@ System.prototype.fail = function(name, dir, except){
  */
 System.prototype.forget = function(need){
     delete this.data[need];
+    delete this.triggers[need];
 }
 
 /**
