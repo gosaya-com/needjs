@@ -237,11 +237,10 @@ System.prototype.process = function(){
         console.log('\n' + JSON.stringify(this.save(), null, 2) + '\n-----------');
     this.nextTick = false;
     if(this.queue.length === 0){
-        if(Object.keys(this.triggers).length !== 0 && once){
+        if(Object.keys(this.triggers).length !== 0){
             // TODO do something
             this.queue.push(Object.keys(this.triggers)[0]);
         } else {
-
             this.emit('stop');
             return;
         }
