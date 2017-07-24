@@ -67,6 +67,12 @@ System.prototype.call = function(name, func, ev_data){
     func.apply(obj, [this.data, ev_data]);
 }
 
+System.prototype.clearQueue = function(name){
+    this.queue = this.queue.filter(function(f){
+        return f !== name;
+    })
+}
+
 System.prototype.fail = function(name, dir, except){
     /*
      * dir:
@@ -123,6 +129,7 @@ System.prototype.fail = function(name, dir, except){
         return f !== name;
     });
     delete this.triggers[name];
+    this.clearQueue(name);
 }
 
 /**
@@ -134,6 +141,7 @@ System.prototype.fail = function(name, dir, except){
 System.prototype.forget = function(need){
     delete this.data[need];
     delete this.triggers[need];
+    this.clearQueue(need);
 }
 
 /**
@@ -171,6 +179,7 @@ System.prototype.inform = function(name, info){
     }
 
     delete this.triggers[name];
+    this.clearQueue(name);
 }
 
 /**
