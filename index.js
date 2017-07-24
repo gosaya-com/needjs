@@ -68,6 +68,7 @@ System.prototype.call = function(name, func, ev_data){
 }
 
 System.prototype.clearQueue = function(name){
+    name = name.toString();
     this.queue = this.queue.filter(function(f){
         // Must be != don't change to !==
         return f != name;
