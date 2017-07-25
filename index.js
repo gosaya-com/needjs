@@ -153,7 +153,8 @@ System.prototype.forget = function(need){
  * @param {Object} info - Need's value
  */
 System.prototype.inform = function(name, info){
-    info = info || true;
+    if(typeof info === 'undefined')
+        info = true;
     this.data[name] = info;
 
     // Check child, kill if un needed
