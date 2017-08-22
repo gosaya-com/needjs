@@ -261,7 +261,7 @@ System.prototype.process = function(){
     var trigger = this.triggers[name];
     var need = this.needs[name];
 
-    if (!trigger.pre_done && need && need.pre){
+    if (trigger && !trigger.pre_done && need && need.pre){
         trigger.pre_done = true;
         this.queue.push(name);
         return this.call(name, need.pre);
