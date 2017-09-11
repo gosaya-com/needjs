@@ -251,14 +251,7 @@ System.prototype.process = function(){
     if(this.queue.length === 0){
         if(Object.keys(this.triggers).length !== 0){
             // TODO do something
-            var keys = Object.keys(this.triggers);
-            for(var i in keys){
-                if ( !this.triggers[i].wait ){
-                    return this.queue.push(Object.keys(this.triggers)[0]);
-                }
-            }
-            this.emit('stop');
-            return;
+            this.queue.push(Object.keys(this.triggers)[0]);
         } else {
             this.emit('stop');
             return;
