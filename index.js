@@ -253,7 +253,7 @@ System.prototype.process = function(){
             // TODO do something
             var keys = Object.keys(this.triggers);
             for(var i in keys){
-                if ( this.triggers[i] && !this.triggers[i].wait ){
+                if ( !this.triggers[i].wait ){
                     return this.queue.push(Object.keys(this.triggers)[0]);
                 }
             }
