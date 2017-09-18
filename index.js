@@ -82,6 +82,11 @@ System.prototype.fail = function(name, dir, except){
      *  1: only childs should fail
      *  2: only parents should fail
      */
+
+    // Prevents a bug where if a need has requested you mroe than once, failing inside would give TypeError
+    if(typeof name === 'undefined')
+        return;
+
     dir = dir || 0;
     except = except || [];
     var trigger = this.triggers[name];
